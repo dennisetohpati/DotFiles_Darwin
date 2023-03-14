@@ -1,0 +1,297 @@
+#+TITLE: Config
+#+AUTHOR: Dennise Tohpati
+#+PROPERTY: header-args :tangle config.el
+#+auto_tangle: yes
+
+* TABLE OF CONTENTS ::toc::
+- [[#initialise][INITIALISE]]
+- [[#centaur-tabbing-for-emacs][Centaur Tabbing for Emacs]]
+- [[#keybinding-related][KeyBinding Related]]
+  - [[#dired][DIRED]]
+- [[#user-defined-initialise][User-Defined Initialise]]
+  - [[#window-initialisation][Window Initialisation]]
+  - [[#org-mode][ORG Mode]]
+  - [[#org-agenda][Org Agenda]]
+
+* INITIALISE
+Initialisation on the default settings of the doom emacs
+
+#+begin_src emacs-lisp :tangle yes
+(setq user-full-name "Dennise Tohpati"
+      user-mail-address "tohpati.uk@gmail.com")
+#+end_src
+
+#+begin_src elisp 
+;; Setup the main theme of the
+(setq doom-theme 'doom-molokai)
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relAtive line numbers, set this to `relative'.
+(setq display-line-numbers-type 'relative)
+
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/org/")
+#+end_src
+
+* Centaur Tabbing for Emacs
+Tabbing system for emacs
+
+| COMMAND                     | DESCRIPTION               | KEYBINDING       |
+|-----------------------------+---------------------------+------------------|
+| centaur-tabs-mode           | /Toggle tabs globally/      | SPC t c          |
+| centaur-tabs-local-mode     | /Toggle tabs local display/ | SPC t C          |
+| centaur-tabs-forward        | /Next tab/                  | g <right> or g t |
+| centaur-tabs-backward       | /Previous tab/              | g <left> or g T  |
+| centaur-tabs-forward-group  | /Next tab group/            | g <down>         |
+| centaur-tabs-backward-group | /Previous tab group/        | g <up>           |
+
+
+#+begin_src elisp
+(setq centaur-tabs-set-bar 'over
+      centaur-tabs-set-icons t
+      centaur-tabs-gray-out-icons 'buffer
+      centaur-tabs-height 24
+      centaur-tabs-set-modified-marker t
+      centaur-tabs-style "bar"
+      centaur-tabs-modified-marker "•")
+(map! :leader
+      :desc "Toggle tabs globally" "t c" #'centaur-tabs-mode
+      :desc "Toggle tabs local display" "t C" #'centaur-tabs-local-mode)
+(evil-define-key 'normal centaur-tabs-mode-map (kbd "g <right>") 'centaur-tabs-forward        ; default Doom binding is 'g t'
+                                               (kbd "g <left>")  'centaur-tabs-backward       ; default Doom binding is 'g T'
+                                               (kbd "g <down>")  'centaur-tabs-forward-group
+                                               (kbd "g <up>")    'centaur-tabs-backward-group)
+#+end_src
+
+* KeyBinding Related
+
+** DIRED
+Dired is the file manager within Emacs.  Below, I setup keybindings for image previews (peep-dired).  Doom Emacs does not use 'SPC d' for any of its keybindings, so I've chosen the format of 'SPC d' plus 'key'.
+
+*** Keybindings Within Dired
+**** Keybindings To Open Dired
+| COMMAND    | DESCRIPTION                        | KEYBINDING |
+|------------+------------------------------------+------------|
+| dired      | /Open dired file manager/            | SPC d d    |
+| dired-jump | /Jump to current directory in dired/ | SPC d j    |
+
+**** Basic dired commands
+| COMMAND                | DESCRIPTION                                 | KEYBINDING |
+|------------------------+---------------------------------------------+------------|
+| dired-view-file        | /View file in dired/                          | SPC d v    |
+| dired-up-directory     | /Go up in directory tree/                     | h          |
+| dired-find-file        | /Go down in directory tree (or open if file)/ | l          |
+| dired-next-line        | /Move down to next line/                      | j          |
+| dired-previous-line    | /Move up to previous line/                    | k          |
+| dired-mark             | /Mark file at point/                          | m          |
+| dired-unmark           | /Unmark file at point/                        | u          |
+| dired-do-copy          | /Copy current file or marked files/           | C          |
+| dired-do-rename        | /Rename current file or marked files/         | R          |
+| dired-hide-details     | /Toggle detailed listings on/off/             | (          |
+| dired-git-info-mode    | /Toggle git information on/off/               | )          |
+| dired-create-directory | /Create new empty directory/                  | +          |
+| dired-diff             | /Compare file at point with another/          | =          |
+| dired-subtree-toggle   | /Toggle viewing subtree at point/             | TAB        |
+
+**** Dired commands using regex
+| COMMAND                 | DESCRIPTION                | KEYBINDING |
+|-------------------------+----------------------------+------------|
+| dired-mark-files-regexp | /Mark files using regex/     | % m        |
+| dired-do-copy-regexp    | /Copy files using regex/     | % C        |
+| dired-do-rename-regexp  | /Rename files using regex/   | % R        |
+| dired-mark-files-regexp | /Mark all files using regex/ | * %        |
+
+**** File permissions and ownership
+| COMMAND         | DESCRIPTION                      | KEYBINDING |
+|-----------------+----------------------------------+------------|
+| dired-do-chgrp  | /Change the group of marked files/ | g G        |
+| dired-do-chmod  | /Change the mode of marked files/  | M          |
+| dired-do-chown  | /Change the owner of marked files/ | O          |
+| dired-do-rename | /Rename file or all marked files/  | R          |
+
+#+begin_src elisp 
+(map! :leader
+      (:prefix ("d" . "dired")
+       :desc "Open dired" "d" #'dired
+       :desc "Dired jump to current" "j" #'dired-jump)
+      (:after dired
+       (:map dired-mode-map
+        :desc "Peep-dired image previews" "d p" #'peep-dired
+        :desc "Dired view file"           "d v" #'dired-view-file)))
+
+(evil-define-key 'normal dired-mode-map
+  (kbd "M-RET") 'dired-display-file
+  (kbd "h") 'dired-up-directory
+  (kbd "l") 'dired-open-file ; use dired-find-file instead of dired-open.
+  (kbd "m") 'dired-mark
+  (kbd "t") 'dired-toggle-marks
+  (kbd "u") 'dired-unmark
+  (kbd "C") 'dired-do-copy
+  (kbd "D") 'dired-do-delete
+  (kbd "J") 'dired-goto-file
+  (kbd "M") 'dired-do-chmod
+  (kbd "O") 'dired-do-chown
+  (kbd "P") 'dired-do-print
+  (kbd "R") 'dired-do-rename
+  (kbd "T") 'dired-do-touch
+  (kbd "Y") 'dired-copy-filenamecopy-filename-as-kill ; copies filename to kill ring.
+  (kbd "Z") 'dired-do-compress
+  (kbd "+") 'dired-create-directory
+  (kbd "-") 'dired-do-kill-lines
+  (kbd "% l") 'dired-downcase
+  (kbd "% m") 'dired-mark-files-regexp
+  (kbd "% u") 'dired-upcase
+  (kbd "* %") 'dired-mark-files-regexp
+  (kbd "* .") 'dired-mark-extension
+  (kbd "* /") 'dired-mark-directories
+  (kbd "; d") 'epa-dired-do-decrypt
+  (kbd "; e") 'epa-dired-do-encrypt)
+;; Get file icons in dired
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+;; With dired-open plugin, you can launch external programs for certain extensions
+;; For example, I set all .png files to open in 'sxiv' and all .mp4 files to open in 'mpv'
+(setq dired-open-extensions '(("gif" . "sxiv")
+                              ("jpg" . "sxiv")
+                              ("png" . "sxiv")
+                              ("mkv" . "mpv")
+                              ("mp4" . "mpv")))
+#+end_src
+
+*** Keybindings Within Dired With Peep-Dired-Mode Enabled
+If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'
+
+| COMMAND              | DESCRIPTION                              | KEYBINDING |
+|----------------------+------------------------------------------+------------|
+| peep-dired           | /Toggle previews within dired/             | SPC d p    |
+| peep-dired-next-file | /Move to next file in peep-dired-mode/     | j          |
+| peep-dired-prev-file | /Move to previous file in peep-dired-mode/ | k          |
+
+#+BEGIN_SRC emacs-lisp
+(evil-define-key 'normal peep-dired-mode-map
+  (kbd "j") 'peep-dired-next-file
+  (kbd "k") 'peep-dired-prev-file)
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+#+END_SRC
+
+*** Making deleted files go to trash can
+#+begin_src emacs-lisp
+(setq delete-by-moving-to-trash t
+      trash-directory "~/.local/share/Trash/files/")
+#+end_src
+
+* User-Defined Initialise
+User defined customisation from default doom emacs
+
+** Window Initialisation
+#+begin_src elisp
+;; SET THE STARTUP TO BE ON FULLSCREEN
+(toggle-frame-fullscreen)
+
+;; set the new splash logo
+(setq fancy-splash-image (concat doom-private-dir "gnu.png"))
+#+end_src
+
+** ORG Mode
+General Customisation for ORG Mode
+
+*** ORG Bullet
+allows beautiful bullet point in orgmode
+
+#+begin_src emacs-lisp
+; Org Bullet
+(map! :leader
+      :desc "Org babel tangle" "m B" #'org-babel-tangle)
+(after! org
+  (setq org-directory "~/nc/Org/"
+        org-default-notes-file (expand-file-name "notes.org" org-directory)
+        org-ellipsis " ▼ "
+        org-superstar-headline-bullets-list '("◉" "●" "○" "◆" "●" "○" "◆")
+        org-superstar-itembullet-alist '((?+ . ?➤) (?- . ?✦)) ; changes +/- symbols in item lists
+        org-log-done 'time
+        org-hide-emphasis-markers t
+        ;; ex. of org-link-abbrev-alist in action
+        ;; [[arch-wiki:Name_of_Page][Description]]
+        org-link-abbrev-alist    ; This overwrites the default Doom org-link-abbrev-list
+          '(("google" . "http://www.google.com/search?q=")
+            ("arch-wiki" . "https://wiki.archlinux.org/index.php/")
+            ("ddg" . "https://duckduckgo.com/?q=")
+            ("wiki" . "https://en.wikipedia.org/wiki/"))
+        org-table-convert-region-max-lines 20000
+        org-todo-keywords        ; This overwrites the default Doom org-todo-keywords
+          '((sequence
+             "TODO(t)"           ; A task that is ready to be tackled
+             "BLOG(b)"           ; Blog writing assignments
+             "GYM(g)"            ; Things to accomplish at the gym
+             "PROJ(p)"           ; A project that contains other tasks
+             "VIDEO(v)"          ; Video assignments
+             "WAIT(w)"           ; Something is holding up this task
+             "|"                 ; The pipe necessary to separate "active" states and "inactive" states
+             "DONE(d)"           ; Task has been completed
+             "CANCELLED(c)" )))) ; Task has been cancelled
+#+end_src
+
+#+RESULTS:
+
+*** ORG
+Several modification on formatting on org
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook 'org-indent-mode)
+(setq org-directory "~/Org/"
+      org-agenda-files '("~/Org/agenda.org")
+      org-default-notes-file (expand-file-name "notes.org" org-directory)
+      org-ellipsis " ▼ "
+      org-log-done 'time
+      org-journal-dir "~/Org/journal/"
+      org-journal-date-format "%B %d, %Y (%A) "
+      org-journal-file-format "%Y-%m-%d.org"
+      org-hide-emphasis-markers t)
+
+(setq org-src-preserve-indentation nil
+      org-src-tab-acts-natively t
+      org-edit-src-content-indentation 0)
+#+end_src
+
+*** ORG-auto-tangle
+#+begin_src emacs-lisp : tangle
+(use-package! org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode)
+  :config
+  (setq org-auto-tangle-default t)
+  )
+#+end_src
+
+** Org Agenda
+#+begin_src elisp
+(after! org
+  (setq org-agenda-files '("~/nc/Org/agenda.org")))
+
+(setq
+   ;; org-fancy-priorities-list '("[A]" "[B]" "[C]")
+   ;; org-fancy-priorities-list '("❗" "[B]" "[C]")
+   org-fancy-priorities-list '("🟥" "🟧" "🟨")
+   org-priority-faces
+   '((?A :foreground "#ff6c6b" :weight bold)
+     (?B :foreground "#98be65" :weight bold)
+     (?C :foreground "#c678dd" :weight bold))
+   org-agenda-block-separator 8411)
+
+(setq org-agenda-custom-commands
+      '(("v" "A better agenda view"
+         ((tags "PRIORITY=\"A\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
+          (tags "PRIORITY=\"B\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "Medium-priority unfinished tasks:")))
+          (tags "PRIORITY=\"C\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "Low-priority unfinished tasks:")))
+          (tags "customtag"
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "Tasks marked with customtag:")))
+
+          (agenda "")
+          (alltodo "")))))
+#+end_src
