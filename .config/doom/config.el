@@ -10,12 +10,12 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-directory "~/.dennisetohpati/")
 
 (setq centaur-tabs-set-bar 'over
       centaur-tabs-set-icons t
       centaur-tabs-gray-out-icons 'buffer
-      centaur-tabs-height 24
+      centaur-tabs-height 26
       centaur-tabs-set-modified-marker t
       centaur-tabs-style "bar"
       centaur-tabs-modified-marker "•")
@@ -91,7 +91,7 @@
 (map! :leader
       :desc "Org babel tangle" "m B" #'org-babel-tangle)
 (after! org
-  (setq org-directory "~/nc/Org/"
+  (setq org-directory "~/.dennisetohpati/"
         org-default-notes-file (expand-file-name "notes.org" org-directory)
         org-ellipsis " ▼ "
         org-superstar-headline-bullets-list '("◉" "●" "○" "◆" "●" "○" "◆")
@@ -106,27 +106,28 @@
             ("ddg" . "https://duckduckgo.com/?q=")
             ("wiki" . "https://en.wikipedia.org/wiki/"))
         org-table-convert-region-max-lines 20000
+
         org-todo-keywords        ; This overwrites the default Doom org-todo-keywords
           '((sequence
              "TODO(t)"           ; A task that is ready to be tackled
              "BLOG(b)"           ; Blog writing assignments
              "GYM(g)"            ; Things to accomplish at the gym
              "PROJ(p)"           ; A project that contains other tasks
-             "VIDEO(v)"          ; Video assignments
+             "WORK(w)"           ; Video assignments
              "WAIT(w)"           ; Something is holding up this task
              "|"                 ; The pipe necessary to separate "active" states and "inactive" states
              "DONE(d)"           ; Task has been completed
              "CANCELLED(c)" )))) ; Task has been cancelled
 
 (add-hook 'org-mode-hook 'org-indent-mode)
-(setq org-directory "~/Org/"
-      org-agenda-files '("~/Org/agenda.org")
+(setq org-directory "~/.dennisetohpati/"
+      org-agenda-files '("~/.dennisetohpati/agenda.org")
       org-default-notes-file (expand-file-name "notes.org" org-directory)
       org-ellipsis " ▼ "
       org-log-done 'time
       org-journal-dir "~/Org/journal/"
       org-journal-date-format "%B %d, %Y (%A) "
-      org-journal-file-format "%Y-%m-%d.org"
+      org-journal-file-format "%d-%m-%Y.org"
       org-hide-emphasis-markers t)
 
 (setq org-src-preserve-indentation nil
@@ -141,32 +142,34 @@
   )
 
 (after! org
-  (setq org-agenda-files '("~/nc/Org/agenda.org")))
+        (setq org-agenda-files '("~/.dennisetohpati/agenda.org")))
 
 (setq
-   ;; org-fancy-priorities-list '("[A]" "[B]" "[C]")
-   ;; org-fancy-priorities-list '("❗" "[B]" "[C]")
-   org-fancy-priorities-list '("🟥" "🟧" "🟨")
-   org-priority-faces
-   '((?A :foreground "#ff6c6b" :weight bold)
-     (?B :foreground "#98be65" :weight bold)
-     (?C :foreground "#c678dd" :weight bold))
-   org-agenda-block-separator 8411)
+    org-fancy-priorities-list '("🟥" "🟧" "🟨" "😶")
+    org-priority-faces
+    '((?A :foreground "#ff6c6b" :weight bold)
+    (?B :foreground "#98be65" :weight bold)
+    (?C :foreground "#c678dd" :weight bold)
+    (?D :foreground "#ffffff" :weight bold))
+    org-agenda-block-separator 8411)
 
 (setq org-agenda-custom-commands
-      '(("v" "A better agenda view"
-         ((tags "PRIORITY=\"A\""
+    '(("v" "A better agenda view"
+        ((tags "PRIORITY=\"A\""
                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
-          (tags "PRIORITY=\"B\""
+                (org-agenda-overriding-header "High-priority unfinished tasks:")))
+        (tags "PRIORITY=\"B\""
                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "Medium-priority unfinished tasks:")))
-          (tags "PRIORITY=\"C\""
+                (org-agenda-overriding-header "Medium-priority unfinished tasks:")))
+        (tags "PRIORITY=\"C\""
                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "Low-priority unfinished tasks:")))
-          (tags "customtag"
+                (org-agenda-overriding-header "Low-priority unfinished tasks:")))
+        (tags "PRIORITY=\"D\""
                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "Tasks marked with customtag:")))
+                (org-agenda-overriding-header "Just Title or notes:")))
+        (tags "customtag"
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                (org-agenda-overriding-header "Tasks marked with customtag:")))
 
-          (agenda "")
-          (alltodo "")))))
+        (agenda "")
+        (alltodo "")))))
