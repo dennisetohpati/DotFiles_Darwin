@@ -3,17 +3,19 @@
 #+PROPERTY: header-args :tangle config.el
 #+auto_tangle: yes
 
-* TABLE OF CONTENTS ::toc::
-- [[#initialise][INITIALISE]]
-- [[#centaur-tabbing-for-emacs][Centaur Tabbing for Emacs]]
-- [[#keybinding-related][KeyBinding Related]]
-  - [[#dired][DIRED]]
-- [[#user-defined-initialise][User-Defined Initialise]]
-  - [[#window-initialisation][Window Initialisation]]
-  - [[#org-mode][ORG Mode]]
-  - [[#org-agenda][Org Agenda]]
+* ORG Config for Emacs
+This is my attempt to get emacs configfurations to be as personalised as my configurations as VScode
+I have been using VScode for a while, and i found joy in emacs. So here's my attempt.
 
-* INITIALISE
+** TABLE OF CONTENTS ::toc::
+- [[#org-config-for-emacs][ORG Config for Emacs]]
+  - [[#initialise][INITIALISE]]
+  - [[#centaur-tabbing-for-emacs][Centaur Tabbing for Emacs]]
+  - [[#keybinding-related][KeyBinding Related]]
+  - [[#user-defined-initialise][User-Defined Initialise]]
+  - [[#development][Development]]
+
+** INITIALISE
 Initialisation on the default settings of the doom emacs
 
 #+begin_src emacs-lisp :tangle yes
@@ -23,7 +25,12 @@ Initialisation on the default settings of the doom emacs
 
 #+begin_src elisp 
 ;; Setup the main theme of the
-(setq doom-theme 'doom-molokai)
+(setq doom-theme 'doom-monokai-pro)
+
+;; setup the font
+(setq doom-font (font-spec :family "JetBrains Mono" :size 13)
+      doom-variable-pitch-font (font-spec :family "JetBrainsMono Nerd Font" :size 13)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 24))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relAtive line numbers, set this to `relative'.
@@ -34,8 +41,11 @@ Initialisation on the default settings of the doom emacs
 (setq org-directory "~/.dennisetohpati/")
 #+end_src
 
-* Centaur Tabbing for Emacs
-Tabbing system for emacs
+#+RESULTS:
+: ~/.dennisetohpati/
+
+** Centaur Tabbing for Emacs
+Tabbing system for emacs just like in vscode!
 
 | COMMAND                     | DESCRIPTION               | KEYBINDING       |
 |-----------------------------+---------------------------+------------------|
@@ -64,19 +74,18 @@ Tabbing system for emacs
                                                (kbd "g <up>")    'centaur-tabs-backward-group)
 #+end_src
 
-* KeyBinding Related
-
-** DIRED
+** KeyBinding Related
+*** DIRED
 Dired is the file manager within Emacs.  Below, I setup keybindings for image previews (peep-dired).  Doom Emacs does not use 'SPC d' for any of its keybindings, so I've chosen the format of 'SPC d' plus 'key'.
 
-*** Keybindings Within Dired
-**** Keybindings To Open Dired
+**** Keybindings Within Dired
+***** Keybindings To Open Dired
 | COMMAND    | DESCRIPTION                        | KEYBINDING |
 |------------+------------------------------------+------------|
 | dired      | /Open dired file manager/            | SPC d d    |
 | dired-jump | /Jump to current directory in dired/ | SPC d j    |
 
-**** Basic dired commands
+***** Basic dired commands
 | COMMAND                | DESCRIPTION                                 | KEYBINDING |
 |------------------------+---------------------------------------------+------------|
 | dired-view-file        | /View file in dired/                          | SPC d v    |
@@ -94,7 +103,7 @@ Dired is the file manager within Emacs.  Below, I setup keybindings for image pr
 | dired-diff             | /Compare file at point with another/          | =          |
 | dired-subtree-toggle   | /Toggle viewing subtree at point/             | TAB        |
 
-**** Dired commands using regex
+***** Dired commands using regex
 | COMMAND                 | DESCRIPTION                | KEYBINDING |
 |-------------------------+----------------------------+------------|
 | dired-mark-files-regexp | /Mark files using regex/     | % m        |
@@ -102,7 +111,7 @@ Dired is the file manager within Emacs.  Below, I setup keybindings for image pr
 | dired-do-rename-regexp  | /Rename files using regex/   | % R        |
 | dired-mark-files-regexp | /Mark all files using regex/ | * %        |
 
-**** File permissions and ownership
+***** File permissions and ownership
 | COMMAND         | DESCRIPTION                      | KEYBINDING |
 |-----------------+----------------------------------+------------|
 | dired-do-chgrp  | /Change the group of marked files/ | g G        |
@@ -147,6 +156,7 @@ Dired is the file manager within Emacs.  Below, I setup keybindings for image pr
   (kbd "* /") 'dired-mark-directories
   (kbd "; d") 'epa-dired-do-decrypt
   (kbd "; e") 'epa-dired-do-encrypt)
+
 ;; Get file icons in dired
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 ;; With dired-open plugin, you can launch external programs for certain extensions
@@ -158,7 +168,10 @@ Dired is the file manager within Emacs.  Below, I setup keybindings for image pr
                               ("mp4" . "mpv")))
 #+end_src
 
-*** Keybindings Within Dired With Peep-Dired-Mode Enabled
+#+RESULTS:
+: ((gif . sxiv) (jpg . sxiv) (png . sxiv) (mkv . mpv) (mp4 . mpv))
+
+**** Keybindings Within Dired With Peep-Dired-Mode Enabled
 If peep-dired is enabled, you will get image previews as you go up/down with 'j' and 'k'
 
 | COMMAND              | DESCRIPTION                              | KEYBINDING |
@@ -174,28 +187,45 @@ If peep-dired is enabled, you will get image previews as you go up/down with 'j'
 (add-hook 'peep-dired-hook 'evil-normalize-keymaps)
 #+END_SRC
 
-*** Making deleted files go to trash can
+**** Making deleted files go to trash can
 #+begin_src emacs-lisp
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
 #+end_src
 
-* User-Defined Initialise
+**** For Debugging
+debugging just like vscode yoooooo
+#+begin_src emacs-lisp
+(global-set-key [f9] (quote dap-breakpoint-toggle))
+(global-set-key [f5] (quote dap-debug-last))
+(global-set-key (kbd "<S-N>-f5") 'dap-stop-thread)
+(global-set-key [f10] (quote dap-step-in))
+(global-set-key [f11] (quote dap-step-out))
+#+end_src
+
+
+** User-Defined Initialise
 User defined customisation from default doom emacs
 
-** Window Initialisation
+*** Window Initialisation
 #+begin_src elisp
 ;; SET THE STARTUP TO BE ON FULLSCREEN
 (toggle-frame-fullscreen)
-
 ;; set the new splash logo
 (setq fancy-splash-image (concat doom-private-dir "gnu.png"))
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (cd default-directory)
+            (eshell)))
 #+end_src
 
-** ORG Mode
+#+RESULTS:
+| (lambda nil (cd default-directory) (eshell)) | doom--reset-file-handler-alist-h |
+
+*** ORG Mode
 General Customisation for ORG Mode
 
-*** ORG Bullet
+**** ORG Bullet
 allows beautiful bullet point in orgmode
 
 #+begin_src emacs-lisp
@@ -233,7 +263,7 @@ allows beautiful bullet point in orgmode
 #+end_src
 
 
-*** ORG
+**** ORG
 Several modification on formatting on org
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-indent-mode)
@@ -252,7 +282,33 @@ Several modification on formatting on org
       org-edit-src-content-indentation 0)
 #+end_src
 
-*** ORG-auto-tangle
+**** ORG Fonts
+Define an org font type for monokai pro
+#+begin_src emacs-lisp
+(defun dt/org-colors-monokai-pro ()
+ "Enable Monokai Pro colors for Org headers."
+ (interactive)
+ (dolist
+     (face
+      '((org-level-1 1.7 "#78dce8" ultra-bold)
+        (org-level-2 1.6 "#ab9df2" extra-bold)
+        (org-level-3 1.5 "#a9dc76" bold)
+        (org-level-4 1.4 "#fc9867" semi-bold)
+        (org-level-5 1.3 "#ff6188" normal)
+        (org-level-6 1.2 "#ffd866" normal)
+        (org-level-7 1.1 "#78dce8" normal)
+        (org-level-8 1.0 "#ab9df2" normal)))
+   (set-face-attribute (nth 0 face) nil :font doom-variable-pitch-font :weight (nth 3 face) :height (nth 1 face) :foreground (nth 2 face)))
+   (set-face-attribute 'org-table nil :font doom-font :weight 'normal :height 1.0 :foreground "#bfafdf"))
+
+;; Load our desired dt/org-colors-* theme on startup
+(after! org
+    (dt/org-colors-monokai-pro))
+#+end_src
+
+
+**** ORG-auto-tangle
+Auto tangle configurations for orgs
 #+begin_src emacs-lisp : tangle
 (use-package! org-auto-tangle
   :defer t
@@ -260,10 +316,23 @@ Several modification on formatting on org
   :config
   (setq org-auto-tangle-default t)
   )
+
+(defun dt/insert-auto-tangle-tag ()
+  "Insert auto-tangle tag in a literate config."
+  (interactive)
+  (evil-org-open-below 1)
+  (insert "#+auto_tangle: t ")
+  (evil-force-normal-state))
+
+(map! :leader
+      :desc "Insert auto_tangle tag" "i a" #'dt/insert-auto-tangle-tag)
 #+end_src
 
-** Org Agenda
-#+begin_src elisp
+#+RESULTS:
+: dt/insert-auto-tangle-tag
+
+*** Org Agenda
+#+begin_src emacs-lisp
 (after! org
         (setq org-agenda-files '("~/.dennisetohpati/agenda.org")))
 
@@ -296,4 +365,94 @@ Several modification on formatting on org
 
         (agenda "")
         (alltodo "")))))
+#+end_src
+
+** Development
+Development section for everything needed just like VS code
+*** Debugging with dap-mode
+**** Dap Mode Config
+#+begin_src emacs-lisp
+(use-package dap-mode
+  ;; Uncomment the config below if you want all UI panes to be hidden by default!
+  ;; :custom
+  ;; (lsp-enable-dap-auto-configure nil)
+  ;; :config
+  ;; (dap-ui-mode 1)
+
+  :config
+  ;; Set up Node debugging
+  (require 'dap-node)
+  (require 'dap-python)
+  (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+
+  ;; Bind `C-c l d` to `dap-hydra` for easy access
+  (general-define-key
+    :keymaps 'lsp-mode-map
+    :prefix lsp-keymap-prefix
+    "d" '(dap-hydra t :wk "debugger")))
+
+
+#+end_src
+
+**** Language Server Protocol (LSP) Config
+***** LSP UI
+#+begin_src emacs-lisp
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+#+end_src
+
+***** LSP treemacs
+provides nice tree views for different aspects of your code like symbols in a file, references of a symbol, or diagnostic messages (errors and warnings) that are found in your code.
+#+begin_src emacs-lisp
+(use-package lsp-treemacs
+  :after lsp)
+#+end_src
+
+***** LSP ivy
+#+begin_src emacs-lisp
+(use-package lsp-ivy)
+#+end_src
+
+***** Enable LSP
+LSP allows debugging configurations similar to other IDE
+#+begin_src emacs-lisp
+(defun efs/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . efs/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
+#+end_src
+
+
+**** Python Debugging Configurations
+#+begin_src
+pip install --user "python-language-server[all]"
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package python-mode
+  :ensure t
+  :hook (python-mode . lsp-deferred)
+  :custom
+  ;; NOTE: Set these if Python 3 is called "python3" on your system!
+  ;; (python-shell-interpreter "python3")
+  ;; (dap-python-executable "python3")
+  (dap-python-debugger 'debugpy)
+  :config
+  (require 'dap-python))
+#+end_src
+
+;; Start the virtual Environment
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :config
+  (pyvenv-mode 1))
 #+end_src
