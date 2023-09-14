@@ -8,21 +8,8 @@ fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-# Run homebrew connect bin command path
-PATH="$PATH:/opt/homebrew/bin/"
-path+=/opt/homebrew/bin
-
-# Path to DOOM emacs 
-export PATH="$HOME/.config/emacs/bin:$PATH"
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-
-# Use Pyenv as default python version management
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)" 
-eval "$(pyenv init -)"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -90,14 +77,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(
-	git
-	brew
-	autojump
-	zsh-autosuggestions
-	zsh-syntax-highlighting
-	web-search
-)
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -129,24 +109,3 @@ source $ZSH/oh-my-zsh.sh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# Git autojump config
-[ -f $(brew --prefix)/etc/profile.d/autojump.sh ] && . $(brew --prefix)/etc/profile.d/autojump.sh
-
-
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-#__conda_setup="$('/Users/dennisezefanyatohpati/opt/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-#if [ $? -eq 0 ]; then
-#    eval "$__conda_setup"
-#else
-#    if [ -f "/Users/dennisezefanyatohpati/opt/miniconda3/etc/profile.d/conda.sh" ]; then
-#        . "/Users/dennisezefanyatohpati/opt/miniconda3/etc/profile.d/conda.sh"
-#    else
-#        export PATH="/Users/dennisezefanyatohpati/opt/miniconda3/bin:$PATH"
-#    fi
-#fi
-#unset __conda_setup
-# <<< conda initialize <<<
-
